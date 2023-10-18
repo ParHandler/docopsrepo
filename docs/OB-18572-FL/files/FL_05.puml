@@ -3,7 +3,25 @@
 autonumber "<b>[00]"
 skinparam maxMessageSize 200
 hide unlinked
-!include https://gl-myc.homecredit.ru/api/v4/projects/88/repository/files/forceLogout_header.puml/raw?ref=OB-8688&private_token=Y46zQn19Rxjsw8URHsDq
+
+participant "UFO" as UFO
+participant "SmartData" as SmartData
+participant "Intellinx (Antifraud System)" as Intellinx
+box "Kafka"
+    participant "<color:red>**[NEW]**</color> ufo-queuing-forceLogoutBlock" as          KafkaUFOBlock
+    participant "<color:red>**[NEW]**</color> ufo-queuing-forceLogoutUnblock" as        KafkaUFOUnblock
+    participant "<color:red>**[NEW]**</color> intellinx-queuing-updateStopList" as      KafkaIntellinx
+    participant "<color:red>**[NEW]**</color> smartdata-events-forceLogout" as          KafkaSmartData
+    participant "<color:red>**[NEW]**</color> netflix-events-forceLogout" as            KafkaNetflix
+    participant "<color:red>**[NEW]**</color> snitchOff_queuing_blackListChecks" as     KafkaSnitchOff
+end box
+participant "MS Checker" as             Checker
+participant "Snitch Back" as            Snitch
+participant "Netflix Conductor" as      Netflix
+participant "SMS-Gate" as               smsgate
+actor "Bank Client" as                  client
+participant "Ocelot Api Gateway" as     ocelot
+participant "myc-auth-server api" as    api
 
 title Обновление кэша блокируемых пользователей в Ocelot MK
 ==Временное решение==
