@@ -1,0 +1,160 @@
+= OB-18572 Блокировка ДБО: переход на целевое решение в интеграции AF-Snitch-MK
+// данный файл является шаблоном статьи
+{firstname} {lastname} {email}
+{revnumber}, {docdate}: AsciiDoc article template
+:encoding: utf-8
+:table-caption: Таблица
+:toc-title: Содержание
+:!figure-caption:
+:figure-caption: Рис.
+:toc:
+:icons: font
+:source-language: csharp
+:source-highlighter: rouge
+:author: Eugene Kunilovsky
+:email: MyCreditNetCore@homecredit.ru
+:revnumber: v2.0.1
+:version-label!:
+:srcdir: ../../../src
+:jira-macro: ../files/jira-macro.adoc
+
+[NOTE]
+====
+Данная страница сгенерирована с помощью специализированного конвертора Confluence Publisher из репозитория Git.
+
+ifdef::docfile[]
+{docfile}
+
+{docdir}
+endif::[]
+
+Правки, вносимые вручную в Confluence, будут удалены при очередной выгрузке документа из Git.
+====
+
+ifndef::docfile[]
+:key_jira: OB-18572
+
+Подключение макроса с одной задачей Jira:
+
+[subs=attributes]
+++++
+<ac:structured-macro ac:name="jira" ac:schema-version="1"><ac:parameter ac:name="key">{key_jira}</ac:parameter>
+</ac:structured-macro>
+++++
+
+// Укажите в запросе тела макроса перечень задач Jira, по которым вносятся правки
+
+История изменений:
+include::{jira-macro}[]
+
+endif::[]
+
+== Описание
+
+Метод _наименование метода_ (MycAuthServer.Services.####) производит следующие действия...
+
+== Схема
+
+== Порядок доработок МК и промежуточные состояния систем
+. В существующее временное решение добавляется логика целевого решения. Оба решения покрываются feature toggle.
+. Какое то время оба решения работают вместе.
+. Временное решение выключается по feature toggle. Наблюдаем за работоспособностью систем.
+. Удаление из МК логики временного решения.
+
+== Передача события блокировки в Snitch из Антифрод
+Здесь описана сценарий создания блокировки по ЧС 49 Постоянная блокировка ДБО
+
+.схема
+[plantuml,target="sequence-diagram-01",format="svg",align="center"]
+----
+include::files/FL_01.puml[]
+@enduml
+----
+
+:prewrap!:
+.Исходный текст диаграммы. Нажмите, чтобы увидеть реализацию
+[%collapsible]
+====
+[source,puml,linenums,indent=0]
+----
+include::files/FL_01.puml[]
+----
+====
+
+== Получение события блокировки из разных систем в MK
+
+.схема
+[plantuml,target="sequence-diagram-02",format="svg",align="center"]
+----
+include::files/FL_04.puml[]
+@enduml
+----
+
+:prewrap!:
+.Исходный текст диаграммы. Нажмите, чтобы увидеть реализацию
+[%collapsible]
+====
+[source,puml,linenums,indent=0]
+----
+include::files/FL_04.puml[]
+----
+====
+
+== Обновление данных о блокировке пользователя на стороне MK
+
+.схема
+[plantuml,target="sequence-diagram-02",format="svg",align="center"]
+----
+include::files/FL_05.puml[]
+@enduml
+----
+
+:prewrap!:
+.Исходный текст диаграммы. Нажмите, чтобы увидеть реализацию
+[%collapsible]
+====
+[source,puml,linenums,indent=0]
+----
+include::files/FL_05.puml[]
+----
+====
+
+== Force logout Принудительное закрытие сессии пользователя 
+
+.схема
+[plantuml,target="sequence-diagram-03",format="svg",align="center"]
+----
+include::files/FL_02.puml[]
+@enduml
+----
+
+:prewrap!:
+.Исходный текст диаграммы. Нажмите, чтобы увидеть реализацию
+[%collapsible]
+====
+[source,puml,linenums,indent=0]
+----
+include::files/FL_02.puml[]
+----
+====
+
+== Отображение статуса блокировки в UFO
+Вижу проблему, что UFO должны первыми перейти на получение данных о блокировке из Snitch. Если МК отключит на своей стороне хранение информации о блокировках, то UFO перестанет получать данные.
+
+
+.схема
+[plantuml,target="sequence-diagram-04",format="svg",align="center"]
+----
+include::files/FL_03.puml[]
+@enduml
+----
+
+:prewrap!:
+.Исходный текст диаграммы. Нажмите, чтобы увидеть реализацию
+[%collapsible]
+====
+[source,puml,linenums,indent=0]
+----
+include::files/FL_03.puml[]
+----
+====

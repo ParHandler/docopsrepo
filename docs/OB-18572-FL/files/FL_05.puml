@@ -1,0 +1,26 @@
+﻿'C:\Users\kunil\AppData\Roaming\JetBrains\Rider2022.3\scratches\FL_05.puml
+@startuml
+autonumber "<b>[00]"
+skinparam maxMessageSize 200
+hide unlinked
+!include https://gl-myc.homecredit.ru/api/v4/projects/88/repository/files/forceLogout_header.puml/raw?ref=OB-8688&private_token=Y46zQn19Rxjsw8URHsDq
+
+title Обновление кэша блокируемых пользователей в Ocelot MK
+==Временное решение==
+loop
+    ocelot -> api: GET myc-auth-server/v1/ClientBlock/GetLastHourBlocks
+    ocelot <-- api: Идентификаторы клиентов, заблокированных за последний час
+    ocelot -> ocelot: Сохранить список идентификаторов (кэшируем ClientId)
+end
+==Целевое решение==
+rnote right ocelot
+В целевом решении не требуется вычитывать кэш Ocelot.
+Ходим в snitch-oc напрямую по API
+end note
+legend right
+    | Цвет      | Назначение  | Абривиатура |
+    |<#Red>     | Добавление  | [ADD]       |
+    |<#magenta> | Изменение   | [MOD]       |
+    |<#gray>    | Удаление    | [DEL]       |
+endlegend
+@enduml

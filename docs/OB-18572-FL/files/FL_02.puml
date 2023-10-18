@@ -1,0 +1,47 @@
+﻿'C:\Users\kunil\AppData\Roaming\JetBrains\Rider2022.3\scratches\FL_02.puml
+@startuml
+autonumber "<b>[00]"
+skinparam maxMessageSize 200
+hide unlinked
+participant "<color:red>**[NEW]**</color> snitchBack-queuing-universalStopListUpdate" as KafkaSnitchBackUniversalStopListUpdate
+participant "snitch-oc" as SnitchOc
+
+
+
+title Force logout. Принудительное закрытие сессии пользователя MK
+
+===Временное решение==
+client -> ocelot++: any request (URL)
+ocelot -> ocelot: получить размер списка блокируемых id (кэша) 
+alt Если URL в запросе существует в списке критичных и кэш id не пустой
+    ocelot -> ocelot: Получить id клиента по токену и сверить со списком блокируемых
+    opt Если id клиента находится в списке блокируемых
+        ocelot -> client--:  Status Code 441: выброс на регистрацию
+        note left
+            Завершение сценария
+        end note
+    end
+else Если URL в запросе отсутствует в списке критичных или кэш id пустой
+ocelot -> : нормальное проксирование запроса
+end
+===Целевое решение==
+client -> ocelot++: any request (URL)
+ocelot -> SnitchOc++: получить из ЧС 48, 49 cuid
+ocelot <-- SnitchOc--
+alt Если URL в запросе существует в списке критичных и клиент есть в snitch-oc
+    ocelot -> ocelot: Получить id клиента по токену и сверить со списком блокируемых
+    ocelot -> client--:  Status Code 441: выброс на регистрацию
+        note left
+            Завершение сценария
+        end note
+else Если URL в запросе отсутствует в списке критичных или клиент не найден в snitch-oc
+ocelot -> : нормальное проксирование запроса
+end
+
+legend right
+    | Цвет      | Назначение  | Абривиатура |
+    |<#Red>     | Добавление  | [ADD]       |
+    |<#magenta> | Изменение   | [MOD]       |
+    |<#gray>    | Удаление    | [DEL]       |
+endlegend
+@enduml

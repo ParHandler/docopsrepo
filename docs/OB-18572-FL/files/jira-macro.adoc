@@ -1,0 +1,9 @@
+﻿[subs=attributes]
+++++
+<ac:structured-macro ac:name="jira">
+<ac:parameter ac:name="columns">key,summary,type,created,updated,assignee,reporter,priority,status,resolution</ac:parameter>
+<ac:parameter ac:name="jqlQuery">project in (OB)
+AND key in ({key_jira})
+ORDER BY issuetype DESC, key ASC</ac:parameter>
+</ac:structured-macro>
+++++

@@ -1,0 +1,90 @@
+﻿'C:\Users\kunil\AppData\Roaming\JetBrains\Rider2022.3\scratches\FL_01.puml
+@startuml
+autonumber "<b>[00]"
+skinparam maxMessageSize 200
+hide unlinked
+
+participant "SmartData" as SmartData
+participant "Intellinx (Antifraud System)" as Intellinx
+box "Kafka"
+    queue "<color:red>**[NEW]**</color> ufo-queuing-forceLogoutBlock" as          KafkaUFOBlock
+    queue "<color:red>**[NEW]**</color> ufo-queuing-forceLogoutUnblock" as        KafkaUFOUnblock
+    queue "<color:red>**[NEW]**</color> intellinx-queuing-updateStopList" as      KafkaIntellinx
+    queue "<color:red>**[NEW]**</color> smartdata-events-forceLogout" as          KafkaSmartData
+    queue "<color:red>**[NEW]**</color> netflix-events-forceLogout" as            KafkaNetflix
+    queue "<color:red>**[NEW]**</color> snitchOff_queuing_blackListChecks" as     KafkaSnitchOff
+    queue "<color:red>**[NEW]**</color> snitchBack-queuing-universalStopListUpdate" as KafkaSnitchBackUniversalStopListUpdate
+end box
+
+
+box "Snitch"
+    participant "Snitch Back" as            Snitch
+    participant "snitch-off" as SnitchOff 
+    participant "Netflix Conductor" as      Netflix
+end box
+
+participant "SMS-Gate" as               smsgate
+actor "Bank Client" as                  client
+participant "Ocelot Api Gateway" as     ocelot
+participant "myc-auth-server api" as    api
+
+title Передача события блокировки в Snitch от Антифрод
+==Целевое решение==
+'UFO -> Кафка <- Snitch Back -> Кафка <- Netflix -> SMS-Gate.
+alt Антифрод
+    alt Включение в ЧС 49 constantly_stop_dbo
+        Intellinx -> KafkaIntellinx: <color:magenta>**[MOD]**</color> Запись события [[https://confluence.homecredit.ru/confluence/display/SNIT/intellinx-queuing-updateStopList блокировки клиента в Intellinx]]
+    else Исключение из ЧС 49 constantly_stop_dbo
+        Intellinx -> KafkaIntellinx: <color:magenta>**[MOD]**</color> Запись события [[https://confluence.homecredit.ru/confluence/display/SNIT/intellinx-queuing-updateStopList разблокировки клиента в Intellinx]]     
+    end
+end 
+
+Snitch -> KafkaIntellinx: Вычитка событий
+Snitch -> KafkaSnitchBackUniversalStopListUpdate: Обновление клиентов на всех потребителей
+SnitchOff -> KafkaSnitchBackUniversalStopListUpdate: Вычитал событие
+SnitchOff -> Netflix: Отправка события для SMS-Gate
+
+alt Телефон клиента добавлен в ЧС
+    Netflix -> smsgate: Блокировка номера телефона POST /blockedMobiles
+        rnote right Netflix
+            **payload**
+                blackListId: //48//
+                mobile: //79123456789//
+                action:<font color="red">*</font> //"insert"//
+        end note
+    smsgate -> smsgate: Внесение в ЧС. Отправка СМС не требуется.
+    Netflix <-- smsgate:
+    rnote left smsgate
+        Блокируем номер телефона
+        **payload**
+            status: //ok//
+            message: ""
+    end note
+else Телефон клиента удален из ЧС
+    Netflix -> smsgate: Разблокировка номера телефона POST /blockedMobiles
+        rnote right Netflix
+            **payload**
+                blackListId://48//
+                mobile: //79123456789//
+                action:<font color="red">*</font> //"delete"//
+        end note
+    smsgate -> smsgate: Удаление номера телефона из ЧС
+    Netflix <-- smsgate:
+    rnote left smsgate
+        **payload**
+            status: //ok//
+            message: ""
+    end note
+end
+
+smsgate --> Netflix
+Netflix --> SnitchOff
+
+legend right
+    | Цвет      | Назначение  | Абривиатура |
+    |<#Red>     | Добавление  | [ADD]       |
+    |<#magenta> | Изменение   | [MOD]       |
+    |<#gray>    | Удаление    | [DEL]       |
+endlegend
+
+@enduml

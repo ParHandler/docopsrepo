@@ -1,0 +1,47 @@
+﻿'C:\Users\kunil\AppData\Roaming\JetBrains\Rider2022.3\scratches\FL_03.puml
+@startuml
+autonumber "<b>[00]"
+skinparam maxMessageSize 200
+hide unlinked
+
+participant "UFO" as UFO
+participant "snitch-oc" as SnitchOc
+participant "myc-auth-server" as MAS
+
+title Oтображение статуса блокировки в UFO
+==Временное решение==
+UFO -> MAS: POST myc-auth-server/v1/ClientBlock/GetStatus
+UFO <-- MAS: 
+rnote left MAS
+**payload**
+"Result": {
+    "Clients": [
+      {
+        "Id": 0,
+        "Cuid": 0,
+        "BlockStatus": 0,
+        "BlockAuthorUsername": "string",
+        "Cause": "string",
+        "BlockExpirationDate": "2023-10-11T14:19:53.278Z",
+        "FullName": "string",
+        "PhoneNumber": "string",
+        "Email": "string",
+        "BirthDate": "2023-10-11T14:19:53.278Z"
+      }
+    ]
+  }
+end note
+
+==Целевое решение==
+UFO -> Snitch: POST snitch-oc/v1/basic/clientchecks
+UFO <-- Snitch:
+rnote left Snitch
+    <color:magenta>**[MOD]**</color> Данные о блокировке
+    **payload**
+    "Cuid": 0,
+    "BlockStatus": 0,
+    "BlockAuthorUsername": "string",
+    "Cause": "string",
+    "BlockExpirationDate": "2023-10-11T14:19:53.278Z"
+end note
+@enduml

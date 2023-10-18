@@ -1,0 +1,80 @@
+﻿C:\Users\kunil\AppData\Roaming\JetBrains\Rider2022.3\scratches\FL_04.puml
+@startuml
+autonumber "<b>[00]"
+skinparam maxMessageSize 200
+skinparam ParticipantPadding 2
+hide unlinked
+participant "UFO" as UFO
+participant "SmartData" as SmartData
+participant "Intellinx (Antifraud System)" as Intellinx
+box "Kafka"
+    queue "ufo-queuing-\nforceLogoutBlock-{env}" as          KafkaUFOBlock
+    queue "ufo-queuing-\nforceLogoutUnblock" as        KafkaUFOUnblock
+    queue "intellinx-queuing-\nupdateStopList-{env}" as      KafkaIntellinx
+    queue "smartdata-events-\nforceLogout" as          KafkaSmartData
+    queue "netflix-events-\nforceLogout" as            KafkaNetflix
+    queue "snitchOff-queuing-\nblackListChecks" as     KafkaSnitchOff
+    queue "<color:red>**[NEW]**</color> snitchBack-queuing-\nuniversalStopListUpdate" as KafkaSnitchBackUniversalStopListUpdate
+end box
+
+participant "MS Checker" as             Checker
+participant "Snitch Back" as            Snitch
+participant "Netflix Conductor" as      Netflix
+participant "SMS-Gate" as               smsgate
+actor "Bank Client" as                  client
+participant "Ocelot Api Gateway" as     ocelot
+participant "myc-auth-server api" as    api
+
+title Force logout. Принудительное закрытие сессии пользователя MK
+
+==Получение события блокировки/разблокировки из kafka==
+==Временное решение==
+
+rnote right KafkaUFOBlock
+    Фичатогл FL-min нужен
+    для получения событий
+    по сокращенному сценарию
+    блокировки
+end rnote
+api -> KafkaIntellinx: Чтение события "Блокировка/разблокировка в МК"
+api -> KafkaUFOBlock: Чтение события "Блокировка/разблокировка в МК"
+
+api -> api: Запись в таблицу блокировки клиента
+rnote right api
+**tables**
+    HCFB_MCAS_ADM.CLIENT_BLOCK
+end note
+api -> api: Анулировать все refresh-токены по cuid
+rnote right api
+**tables**
+    HCFB_MCAS_ADM.REFRESH_TOKEN
+end note   
+
+==Целевое решение==
+api -> KafkaSnitchBackUniversalStopListUpdate: ???Чтение события "Блокировка/разблокировка в МК"
+rnote right KafkaSnitchBackUniversalStopListUpdate
+    Надо подумать зачем это нужно.
+    Как быть с блокировками, которые
+    по определенным причинам не хранятся в Снитч?
+    Т.е. эти блокировки будут добавлены вручную
+    сопровождением МК.    
+end rnote
+api -> api: Запись в таблицу блокировки клиента
+rnote right api
+**tables**
+    HCFB_MCAS_ADM.CLIENT_BLOCK
+end note
+api -> api: Анулировать все refresh-токены по cuid
+rnote right api
+**tables**
+    HCFB_MCAS_ADM.REFRESH_TOKEN
+end note   
+
+
+legend right
+    | Цвет      | Назначение  | Абривиатура |
+    |<#Red>     | Добавление  | [ADD]       |
+    |<#magenta> | Изменение   | [MOD]       |
+    |<#gray>    | Удаление    | [DEL]       |
+endlegend
+@enduml
