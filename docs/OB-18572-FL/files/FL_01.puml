@@ -7,13 +7,13 @@ hide unlinked
 participant "SmartData" as SmartData
 participant "Intellinx (Antifraud System)" as Intellinx
 box "Kafka"
-    queue "<color:red>**[NEW]**</color> ufo-queuing-forceLogoutBlock" as          KafkaUFOBlock
-    queue "<color:red>**[NEW]**</color> ufo-queuing-forceLogoutUnblock" as        KafkaUFOUnblock
-    queue "<color:red>**[NEW]**</color> intellinx-queuing-updateStopList" as      KafkaIntellinx
-    queue "<color:red>**[NEW]**</color> smartdata-events-forceLogout" as          KafkaSmartData
-    queue "<color:red>**[NEW]**</color> netflix-events-forceLogout" as            KafkaNetflix
-    queue "<color:red>**[NEW]**</color> snitchOff_queuing_blackListChecks" as     KafkaSnitchOff
-    queue "<color:red>**[NEW]**</color> snitchBack-queuing-universalStopListUpdate" as KafkaSnitchBackUniversalStopListUpdate
+    queue "<color:red>**[NEW]**</color> ufo-queuing-\nforceLogoutBlock" as          KafkaUFOBlock
+    queue "<color:red>**[NEW]**</color> ufo-queuing-\nforceLogoutUnblock" as        KafkaUFOUnblock
+    queue "<color:red>**[NEW]**</color> intellinx-queuing-\nupdateStopList" as      KafkaIntellinx
+    queue "<color:red>**[NEW]**</color> smartdata-events-\nforceLogout" as          KafkaSmartData
+    queue "<color:red>**[NEW]**</color> netflix-events-\nforceLogout" as            KafkaNetflix
+    queue "<color:red>**[NEW]**</color> snitchOff_queuing_\nblackListChecks" as     KafkaSnitchOff
+    queue "<color:red>**[NEW]**</color> snitchBack-queuing-\nuniversalStopListUpdate" as KafkaSnitchBackUniversalStopListUpdate
 end box
 
 
