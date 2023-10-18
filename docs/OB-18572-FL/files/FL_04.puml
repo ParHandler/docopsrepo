@@ -36,8 +36,8 @@ rnote right KafkaUFOBlock
     по сокращенному сценарию
     блокировки
 end rnote
-api -> KafkaIntellinx: Чтение события "Блокировка/разблокировка в МК"
-api -> KafkaUFOBlock: Чтение события "Блокировка/разблокировка в МК"
+api -> KafkaIntellinx: Чтение события "Блокировка/разблокировка в OB"
+api -> KafkaUFOBlock: Чтение события "Блокировка/разблокировка в OB"
 
 api -> api: Запись в таблицу блокировки клиента
 rnote right api
@@ -51,18 +51,20 @@ rnote right api
 end note   
 
 ==Целевое решение==
-api -> KafkaSnitchBackUniversalStopListUpdate: ???Чтение события "Блокировка/разблокировка в МК"
+api -> KafkaIntellinx: <color:magenta>**[MOD]**</color> Чтение события "Блокировка в OB"
+api -> KafkaUFOBlock: <color:magenta>**[MOD]**</color> Чтение события "Блокировка в OB"
+
+api -> KafkaSnitchBackUniversalStopListUpdate: <color:gray>**[DEL]**</color> Чтение события "Блокировка/разблокировка в МК"
 rnote right KafkaSnitchBackUniversalStopListUpdate
-    Надо подумать зачем это нужно.
-    Как быть с блокировками, которые
-    по определенным причинам не хранятся в Снитч?
-    Т.е. эти блокировки будут добавлены вручную
-    сопровождением МК.    
+    Данный топик не используем,    
+    т.к. хотим сократить лаг времени по FL
 end rnote
 api -> api: Запись в таблицу блокировки клиента
 rnote right api
+События блокировки, 
+хранимые в течение 1 часа
 **tables**
-    HCFB_MCAS_ADM.CLIENT_BLOCK
+    HCFB_MCAS_ADM.CLIENT_BLOCK_CACHE
 end note
 api -> api: Анулировать все refresh-токены по cuid
 rnote right api
