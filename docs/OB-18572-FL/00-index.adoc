@@ -1,4 +1,4 @@
-= OB-18572 Блокировка ДБО: переход на целевое решение в интеграции AF-Snitch-MK
+= OB-18572 Блокировка ДБО Переход на целевое решение в интеграции AF-Snitch-MK
 // данный файл является шаблоном статьи
 {firstname} {lastname} {email}
 {revnumber}, {docdate}: AsciiDoc article template
