@@ -25,7 +25,7 @@ actor "Bank Client" as                  client
 participant "Ocelot Api Gateway" as     ocelot
 participant "myc-auth-server api" as    api
 
-title Force logout. Принудительное закрытие сессии пользователя MK
+title Force logout. Принудительное закрытие сессии пользователя OB
 
 ==Получение события блокировки/разблокировки из kafka==
 ==Временное решение==

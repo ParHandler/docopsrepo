@@ -23,7 +23,7 @@ actor "Bank Client" as                  client
 participant "Ocelot Api Gateway" as     ocelot
 participant "myc-auth-server api" as    api
 
-title Обновление кэша блокируемых пользователей в Ocelot MK
+title Обновление кэша блокируемых пользователей в Ocelot OB
 ==Временное решение==
 loop
     ocelot -> api: GET myc-auth-server/v1/ClientBlock/GetLastHourBlocks

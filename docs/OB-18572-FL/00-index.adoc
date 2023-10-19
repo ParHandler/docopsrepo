@@ -1,4 +1,4 @@
-= OB-18572 Блокировка ДБО Переход на целевое решение в интеграции AF-Snitch-MK
+= OB-18572 Блокировка ДБО Переход на целевое решение в интеграции AF-Snitch-OB
 // данный файл является шаблоном статьи
 {firstname} {lastname} {email}
 {revnumber}, {docdate}: AsciiDoc article template
@@ -75,7 +75,7 @@ include::files/FL_01.puml[]
 ----
 ====
 
-== Получение события блокировки из разных систем в MK
+== Получение события блокировки из разных систем в OB
 
 .схема
 [plantuml,target="sequence-diagram-02",format="svg",align="center"]
@@ -94,7 +94,7 @@ include::files/FL_04.puml[]
 ----
 ====
 
-== Обновление данных о блокировке пользователя на стороне MK
+== Обновление данных о блокировке пользователя на стороне OB
 
 .схема
 [plantuml,target="sequence-diagram-002",format="svg",align="center"]
