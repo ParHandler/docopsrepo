@@ -12,7 +12,7 @@
 :source-language: csharp
 :source-highlighter: rouge
 :author: Eugene Kunilovsky
-:email: MyCreditNetCore@homecredit.ru
+:email:
 :revnumber: v2.0.1
 :version-label!:
 :srcdir: ../../../src
